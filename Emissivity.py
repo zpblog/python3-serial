@@ -21,8 +21,22 @@ def uchar_checkbcc(data, byteorder='little'):
     checkbcc = 0  
     for i in range(0, length):  
         checkbcc ^= int.from_bytes(data[i:i+1], byteorder, signed=False)    
-          
-    return checkbcc  
+    checkbcc = hex(checkbcc)[2:]
+    return checkbcc
+#LRC校验
+def uchar_checklrc(data, byteorder='little'):  
+    ''''' 
+    char_checksum 按字节计算校验和补码。
+    @param data: 字节串 
+    @param byteorder: 大/小端 
+    '''  
+    length = len(data)  
+    checksum = 0  
+    for i in range(0, length):  
+        checksum += int.from_bytes(data[i:i+1], byteorder, signed=False)
+        checksum &= 0xFF # 强制截断
+    checklrc = hex(2**8-checksum)[2:]      #补码
+    return checklrc   
 i = 1000
 while (i > 99):
     serialport.open()
@@ -34,7 +48,7 @@ while (i > 99):
     elif len(value) % 4 != 0:
         value = '0d00' + value
     xx = bytes.fromhex(value)
-    yy = hex(uchar_checkbcc(xx))[2:]
+    yy = uchar_checkbcc(xx)
     if len(yy) % 2 != 0:
         yy = '0' + yy    
     d = value + yy
