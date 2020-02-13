@@ -74,6 +74,7 @@ while (i > 99):
     # 写入文件
     f1 = open('D:/temprecord.txt','a')
     f1.write(data2 + '\n')
+    f1.close()
     i = i - 10
     time.sleep(3)
     serialport.close()
